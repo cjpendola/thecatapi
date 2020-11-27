@@ -17,6 +17,7 @@
 @property (nonatomic, readonly, copy) NSString *temperament;
 @property (nonatomic, readonly, copy) NSString *life_span;
 @property (nonatomic, readonly, copy) NSString *alt_names;
+@property (nonatomic, readonly, copy) NSString *url_image;
 
 -(instancetype) initWithId:(NSString *)id
                       name:(NSString *)name

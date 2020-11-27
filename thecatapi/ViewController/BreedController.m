@@ -63,7 +63,7 @@ static NSString * const imagebaseURL = @"https://api.thecatapi.com/v1/images/sea
 }
 
 
-- (void) fetchImageForBreed:(Breed *)breed  completion:(void (^)(NSArray<Breed *> *, NSError *))completion
+- (void) fetchImageForBreed:(Breed *)breed  completion:(void (^)( NSString *, NSError *))completion
 {
     NSURL *baseURL = [BreedController imageBaseURL];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:baseURL resolvingAgainstBaseURL:true];
@@ -92,16 +92,38 @@ static NSString * const imagebaseURL = @"https://api.thecatapi.com/v1/images/sea
         
         NSArray *breedArray = jsonDictionary;
         NSMutableArray *breedsPlaceholder = [NSMutableArray array];
-        
+        NSString *breed_id = @"";
         for (NSDictionary *breedDictionary in breedArray) {
-            Breed *breed = [[Breed alloc] initWithDictionary: breedDictionary];
-            //[breedsPlaceholder addObject: breed];
-            NSLog(@"%@", breedDictionary[@"url"]);
+            breed_id = breedDictionary[@"url"];
         }
-        completion(breedsPlaceholder, nil);
+        completion(breed_id, nil);
     
     }]resume];
 }
+
+
+- (void)fetchCatImage:(NSString *)breed_url completion:(void (^)(UIImage *, NSError * ))completion
+{
+    NSURL *imageURL = [NSURL URLWithString:breed_url];
+    
+    [[[NSURLSession sharedSession] dataTaskWithURL:imageURL completionHandler:^(NSData * data, NSURLResponse *  response, NSError * error) {
+        
+        if (error) {
+            NSLog(@"there was an error  %s: %@, %@", __PRETTY_FUNCTION__, error, [error localizedDescription]);
+            return completion(nil, [NSError errorWithDomain:@"there was an error fetching json" code:(NSInteger)-1 userInfo:nil]);
+        }
+        
+        if (!data) {
+            NSLog(@"Error fetching image %s: %@, %@" ,  __PRETTY_FUNCTION__, error, [error localizedDescription]);
+            return completion(nil, [NSError errorWithDomain:@"Error fetching image" code:(NSInteger)-1 userInfo:nil]);
+        }
+        
+        UIImage *image = [UIImage imageWithData:data];
+        completion(image, nil);
+        
+    }]resume];
+}
+
 
 + (NSURL *)baseURL
 {

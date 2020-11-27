@@ -20,7 +20,10 @@
 //fetch your Breed
 -(void) fetchBreeds:(NSString *)searchTerm completion:(void(^) (NSArray<Breed *> *cards, NSError *error))completion;
 
-//fetch the image/images for your breed
--(void) fetchImageForBreed:(Breed *)breed completion:(void(^) (NSArray<Breed *> *cards, NSError *error))completion;
+//fetch the url string for your breed
+-(void) fetchImageForBreed:(Breed *)breed completion:(void(^) (NSString *breed_url, NSError *error))completion;
+
+//fetch the image for your url breed
+- (void)fetchCatImage:(NSString *)breed_url completion:(void(^) (UIImage *image, NSError *error))completion;
 
 @end
